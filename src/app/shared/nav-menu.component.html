@@ -1,0 +1,33 @@
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Fake Store</a>
+        <button title="Navigation menu" class="navbar-toggler" (onclick)="toggleNavMenu()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" (onclick)="toggleNavMenu()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <a class="nav-link" routerLink="/">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Início
+            </a>
+        </div>
+        <div class="nav-item px-3">
+            <a class="nav-link" routerLink="/produtos">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Produtos
+            </a>
+        </div>
+        <div class="nav-item px-3">
+            <a class="nav-link" routerLink="/usuarios">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuários
+            </a>
+        </div>
+        <div class="nav-item px-3">
+            <a class="nav-link" routerLink="/carrinhos">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Carrinhos
+            </a>
+        </div>
+    </nav>
+</div>
