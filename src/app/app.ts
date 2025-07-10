@@ -4,10 +4,11 @@ import { NavMenuComponent } from "./shared/nav-menu.component";
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, NavMenuComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected title = 'Fake Store';
+  
 }

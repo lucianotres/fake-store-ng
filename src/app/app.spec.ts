@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { provideRouter } from '@angular/router';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
@@ -14,10 +16,15 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', () => {
+  it('should render the default structure', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, fake-store-next-ng');
+    
+    let div_page = compiled.querySelector('div.page');
+    expect(div_page).toBeTruthy();   
+    expect(div_page?.querySelector('div.sidebar')).toBeTruthy();
+    expect(div_page?.querySelector('main')).toBeTruthy();
+    expect(div_page?.querySelector('article.content')).toBeTruthy();
   });
 });
