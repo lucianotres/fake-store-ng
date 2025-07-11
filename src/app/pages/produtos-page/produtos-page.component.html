@@ -1,1 +1,14 @@
-<p>Não implementado ainda!</p>
+<h2>Nossos Produtos</h2>
+
+@let products = products$ | async;
+@if (products) {
+  @for(product of products; track product.id) {
+    <produto-list-view [product]="product" />
+  }
+  @empty {
+    <p>Nenhum produto encontrado.</p>
+  }
+}
+@else {
+  <p>Carregando produtos...</p>
+}
