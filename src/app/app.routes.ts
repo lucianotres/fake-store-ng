@@ -23,6 +23,6 @@ export const routes: Routes = [
     path: 'carrinhos',
     loadComponent: () => import('./pages/carrinhos-page/carrinhos-page.component')
       .then(m => m.CarrinhosPageComponent),
-    title: 'Fake Store - Carrinhos'
+    title: 'Fake Store - Carrinhos de Compras',
   }
 ];

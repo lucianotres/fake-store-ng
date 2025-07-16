@@ -10,22 +10,22 @@
 <div class="@NavMenuCssClass nav-scrollable" (onclick)="toggleNavMenu()">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <a class="nav-link" routerLink="/">
+            <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Início
             </a>
         </div>
         <div class="nav-item px-3">
-            <a class="nav-link" routerLink="/produtos">
+            <a class="nav-link" routerLink="/produtos" routerLinkActive="active">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Produtos
             </a>
         </div>
         <div class="nav-item px-3">
-            <a class="nav-link" routerLink="/usuarios">
+            <a class="nav-link" routerLink="/usuarios" routerLinkActive="active">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuários
             </a>
         </div>
         <div class="nav-item px-3">
-            <a class="nav-link" routerLink="/carrinhos">
+            <a class="nav-link" routerLink="/carrinhos" routerLinkActive="active">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Carrinhos
             </a>
         </div>
