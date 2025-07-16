@@ -1,0 +1,54 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, lastValueFrom, Observable } from 'rxjs';
+import { map, reduce } from 'rxjs/operators';
+import { CartDTO } from '../models/Cart.model';
+import { Product } from '../models/product.model';
+import { Carrinho, CarrinhoItem } from '../models/Carrinho.model';
+import { FakeStoreProducts } from './fake-store-products.service';
+import { FakeStoreCartService } from './fake-store-carts.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LocalStorageDataService {
+
+  private readonly _carts = new BehaviorSubject<CartDTO[]>([]);
+  private readonly _products = new BehaviorSubject<Product[]>([]);
+
+  readonly carrinhos$: Observable<CartDTO[]> = this._carts.asObservable();
+
+  constructor(
+    private _productService: FakeStoreProducts,
+    private _cartService: FakeStoreCartService    
+  ) { }
+
+  public async CarregarCarrinhosProdutos(): Promise<void>
+  {
+    this._products.next(await lastValueFrom(this._productService.getProducts()));
+    this._carts.next(await lastValueFrom(this._cartService.getCarts$()));
+  }
+  
+  public carrinhosComProdutos$(): Observable<Carrinho[]> {
+    return this.carrinhos$.pipe(
+      map(carts => carts.map(cart => {
+        const carrinho = new Carrinho();
+        carrinho.dados = cart;
+        carrinho.items = cart.products.map(p => {
+          const item = new CarrinhoItem();
+          item.productId = p.productId;
+          item.quantity = p.quantity;
+          item.product = this._products.value.find(product => product.id === p.productId);
+          return item;
+        });
+        return carrinho;
+      }))
+    );
+  }
+
+  public carrinhosTotal$(): Observable<number> {
+    return this.carrinhosComProdutos$().pipe(
+      map(carts => carts.reduce((acc, c) => acc + c.total, 0))
+    );
+  }
+
+}
