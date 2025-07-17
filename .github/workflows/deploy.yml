@@ -37,6 +37,8 @@ jobs:
 
       - name: Build Angular app
         run: npm run build-gh
+        with:
+          BASE_HREF: ${{ steps.setup_pages.outputs.base_url }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

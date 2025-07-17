@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build-gh": "ng build --configuration production --base-href 'https://lucianotres.github.io/fake-store-ng/'"
+    "build-gh": "ng build --configuration production --base-href $BASE_HREF"
   },
   "prettier": {
     "overrides": [
