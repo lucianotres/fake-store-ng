@@ -1,0 +1,7 @@
+<label for="cotacao">Cotação:</label>
+<select id="cotacao" class="form-select" [(ngModel)]="cotacaoEscolhida">
+    <option [value]="null">--Selecione--</option>
+    @for(c of listaCotacoes; track c.para) {
+      <option [value]="c.para">{{c.cotacao}}</option>
+    }
+</select>

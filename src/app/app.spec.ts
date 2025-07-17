@@ -1,12 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { provideRouter } from '@angular/router';
+import { LocalStorageDataService } from './services/local-storage-data.service';
+import { signal } from '@angular/core';
 
 describe('App', () => {
+  let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
+
   beforeEach(async () => {
+    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['getCotacaoSelecionada', 'setCotacaoSelecionada']);
+    mockLocalStorageDataService.getCotacaoSelecionada.and.returnValue(signal(null));
+    
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }
+      ],
     }).compileComponents();
   });
 

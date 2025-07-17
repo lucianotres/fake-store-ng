@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, Signal } from '@angular/core';
 import { BehaviorSubject, lastValueFrom, Observable } from 'rxjs';
 import { map, reduce } from 'rxjs/operators';
 import { CartDTO } from '../models/Cart.model';
@@ -6,6 +6,7 @@ import { Product } from '../models/product.model';
 import { Carrinho, CarrinhoItem } from '../models/Carrinho.model';
 import { FakeStoreProductsService } from './fake-store-products.service';
 import { FakeStoreCartService } from './fake-store-carts.service';
+import { MinhaCotacao } from '../models/MinhaCotacao.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,8 @@ export class LocalStorageDataService {
   private readonly _products = new BehaviorSubject<Product[]>([]);
 
   readonly carrinhos$: Observable<CartDTO[]> = this._carts.asObservable();
+
+  private cotacaoSelecionada = signal<MinhaCotacao | null>(null);
 
   constructor(
     private _productService: FakeStoreProductsService,
@@ -49,6 +52,14 @@ export class LocalStorageDataService {
     return this.carrinhosComProdutos$().pipe(
       map(carts => carts.reduce((acc, c) => acc + c.total, 0))
     );
+  }
+
+  public getCotacaoSelecionada(): Signal<MinhaCotacao | null> {
+    return this.cotacaoSelecionada;
+  }
+
+  public setCotacaoSelecionada(cotacao: MinhaCotacao | null): void {
+    this.cotacaoSelecionada.set(cotacao);
   }
 
 }

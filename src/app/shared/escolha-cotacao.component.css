@@ -1,0 +1,14 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+label {
+    margin: 0 0 0 18px;
+}
+
+select {
+    width: 150px;
+    margin: 0 0 0 4px;
+}

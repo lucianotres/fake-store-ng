@@ -2,3 +2,7 @@
 <p>Bem vindos a nossa loja fake!</p>
 
 <p>Escolha uma opção no menu para iniciar</p>
+
+@if(cotacaoEscolhida !== null) {
+  <p>Escolhido cotação atual em {{cotacaoEscolhida.cotacao}}: <strong>{{cotacaoEscolhida.para}} = 0</strong></p>
+}
