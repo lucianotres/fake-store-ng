@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FakeStoreProducts } from '../../services/fake-store-products.service';
+import { FakeStoreProductsService } from '../../services/fake-store-products.service';
 import { Observable } from 'rxjs';
 import { Product } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,7 @@ export class ProdutosPageComponent implements OnInit {
   public products$!: Observable<Product[]>;
 
   constructor(
-    private productsService: FakeStoreProducts
+    private productsService: FakeStoreProductsService
   ) { }
 
   ngOnInit(): void {

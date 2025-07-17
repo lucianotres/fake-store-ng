@@ -7,7 +7,7 @@ import { ILogger, LOGGER_TOKEN } from '../ILogger';
 @Injectable({
   providedIn: 'root'
 })
-export class FakeStoreProducts {
+export class FakeStoreProductsService {
   private baseUrl = 'https://fakestoreapi.com';
 
   constructor(

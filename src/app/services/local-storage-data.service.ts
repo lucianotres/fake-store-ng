@@ -4,7 +4,7 @@ import { map, reduce } from 'rxjs/operators';
 import { CartDTO } from '../models/Cart.model';
 import { Product } from '../models/product.model';
 import { Carrinho, CarrinhoItem } from '../models/Carrinho.model';
-import { FakeStoreProducts } from './fake-store-products.service';
+import { FakeStoreProductsService } from './fake-store-products.service';
 import { FakeStoreCartService } from './fake-store-carts.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class LocalStorageDataService {
   readonly carrinhos$: Observable<CartDTO[]> = this._carts.asObservable();
 
   constructor(
-    private _productService: FakeStoreProducts,
+    private _productService: FakeStoreProductsService,
     private _cartService: FakeStoreCartService    
   ) { }
 
