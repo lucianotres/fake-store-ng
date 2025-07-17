@@ -8,3 +8,10 @@ export interface ILogger {
 }
 
 export const LOGGER_TOKEN = new InjectionToken<ILogger>('ILogger');
+
+export class MockLogger implements ILogger {
+  log(message: string): void { }
+  logInformation(message: string): void { }
+  logWarning(message: string): void { }
+  logError(message: string): void { }
+}
