@@ -36,7 +36,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build Angular app
-        run: ng build --configuration production --base-href "https://lucianotres.github.io/fake-store-ng/"
+        run: npm run build-gh
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
