@@ -4,11 +4,14 @@ import { FakeStoreCartService } from "./fake-store-carts.service";
 import { LocalStorageDataService } from "./local-storage-data.service";
 import { of } from "rxjs";
 import { Product } from "../models/product.model";
+import { AwesomeApiService } from "./awesome-api.service";
 
 describe("LocalStorageDataService", () => {
   let localStorageDataService: LocalStorageDataService;
   let fakeStoreProductsService: jasmine.SpyObj<FakeStoreProductsService>;
   let fakeStoreCartService: jasmine.SpyObj<FakeStoreCartService>;
+  let fakeAwesomeApiService: jasmine.SpyObj<AwesomeApiService>;
+
   const mockProducts: Product[] = [
     {
       "id": 2,
@@ -54,18 +57,35 @@ describe("LocalStorageDataService", () => {
     }
   ];
 
+  const mockCotacao = {
+    "code": "USD",
+    "codein": "BRL",
+    "name": "Dólar Americano/Real Brasileiro",
+    "high": 5.365,
+    "low": 5.0,
+    "varBid": -0.04,
+    "pctChange": -4,
+    "bid": 5.09,
+    "ask": 5.13,
+    "timestamp": new Date().toISOString(),
+    "create_date": new Date().toISOString()
+  }
+
 
   beforeEach(async () => {
     fakeStoreProductsService = jasmine.createSpyObj('FakeStoreProductsService', ['getProducts']);
     fakeStoreCartService = jasmine.createSpyObj('FakeStoreCartService', ['getCarts$']);
+    fakeAwesomeApiService = jasmine.createSpyObj('AwesomeApiService', ['ultimaCotacao$']);
 
     fakeStoreProductsService.getProducts.and.returnValue(await Promise.resolve(of(mockProducts)));
     fakeStoreCartService.getCarts$.and.returnValue(await Promise.resolve(of(mockCarts)));
+    fakeAwesomeApiService.ultimaCotacao$.and.returnValue(await Promise.resolve(of(mockCotacao)));
 
     TestBed.configureTestingModule({
       providers: [
         { provide: FakeStoreProductsService, useValue: fakeStoreProductsService },
         { provide: FakeStoreCartService, useValue: fakeStoreCartService },
+        { provide: AwesomeApiService, useValue: fakeAwesomeApiService },
         LocalStorageDataService
       ]
     });

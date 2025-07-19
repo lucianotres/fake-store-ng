@@ -9,9 +9,10 @@ describe('HomeComponent', () => {
   let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
 
   beforeEach(async () => {
-    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['getCotacaoSelecionada']);
+    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['getCotacaoSelecionada', 'getCotacao']);
     mockLocalStorageDataService.getCotacaoSelecionada.and.returnValue(signal(null));
-
+    mockLocalStorageDataService.getCotacao.and.returnValue(signal(null));
+    
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
       providers: [
