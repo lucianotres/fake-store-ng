@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FakeStoreProductsService } from '../../services/fake-store-products.service';
-import { Observable } from 'rxjs';
+import { LocalStorageDataService } from '../../services/local-storage-data.service';
+import { Observable, of } from 'rxjs';
 import { Product } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
 import { ProdutoListViewComponent } from '../../shared/produto-list-view.component';
@@ -13,14 +13,15 @@ import { ProdutoListViewComponent } from '../../shared/produto-list-view.compone
   styleUrl: './produtos-page.component.css'
 })
 export class ProdutosPageComponent implements OnInit {
-  public products$!: Observable<Product[]>;
+  public products$: Observable<Product[]> = of([]);
 
   constructor(
-    private productsService: FakeStoreProductsService
+    private localDataService: LocalStorageDataService,
   ) { }
 
-  ngOnInit(): void {
-    this.products$ = this.productsService.getProducts();
+  async ngOnInit(): Promise<void> {
+    await this.localDataService.CarregaProdutos();
+    this.products$ = this.localDataService.produtos$();
   }
 
 }

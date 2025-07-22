@@ -18,6 +18,7 @@ export class LocalStorageDataService {
   private readonly _carts = new BehaviorSubject<CartDTO[]>([]);
   private readonly _products = new BehaviorSubject<Product[]>([]);
 
+  readonly products$: Observable<Product[]> = this._products.asObservable();
   readonly carrinhos$: Observable<CartDTO[]> = this._carts.asObservable();
 
   private cotacaoSelecionada = signal<MinhaCotacao | null>(null);
@@ -30,8 +31,15 @@ export class LocalStorageDataService {
     private _awesomeApiService: AwesomeApiService
   ) { }
 
-  public async CarregarCarrinhosProdutos(): Promise<void>
-  {
+  public async CarregaProdutos(): Promise<void> {
+    this._products.next(await lastValueFrom(this._productService.getProducts()));
+  }
+
+  public produtos$(): Observable<Product[]> {
+    return this.products$;
+  }
+
+  public async CarregarCarrinhosProdutos(): Promise<void> {
     this._products.next(await lastValueFrom(this._productService.getProducts()));
     this._carts.next(await lastValueFrom(this._cartService.getCarts$()));
   }

@@ -10,7 +10,6 @@ import { Cotacao } from '../../models/Cotacao.model';
 describe('ProdutosPageComponent', () => {
   let component: ProdutosPageComponent;
   let fixture: ComponentFixture<ProdutosPageComponent>;
-  let mockProductsService: jasmine.SpyObj<FakeStoreProductsService>;
   let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
   
   const mockProducts: Product[] = [
@@ -18,16 +17,13 @@ describe('ProdutosPageComponent', () => {
   ];
 
   beforeEach(async () => {
-    mockProductsService = jasmine.createSpyObj('FakeStoreProducts', ['getProducts']);
-    mockProductsService.getProducts.and.returnValue(of(mockProducts));
-
-    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['getCotacao']);
+    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['produtos$', 'getCotacao']);
+    mockLocalStorageDataService.produtos$.and.returnValue(of(mockProducts));
     mockLocalStorageDataService.getCotacao.and.returnValue((() => null) as Signal<Cotacao | null>);        
 
     await TestBed.configureTestingModule({
       imports: [ProdutosPageComponent],
       providers: [
-        { provide: FakeStoreProductsService, useValue: mockProductsService },
         { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }
       ]
     })

@@ -97,6 +97,16 @@ describe("LocalStorageDataService", () => {
     expect(localStorageDataService).toBeTruthy();
   });
 
+  it("should load products list", async ()=>  {
+    await localStorageDataService.CarregaProdutos();
+    expect(fakeStoreProductsService.getProducts).toHaveBeenCalled();
+    localStorageDataService.produtos$().subscribe(products => {
+      expect(products.length).toBe(2);
+      expect(products[0].id).toBe(2);
+      expect(products[1].id).toBe(3);
+    });
+  });
+
   it("should load products and carts", async () => {
     await localStorageDataService.CarregarCarrinhosProdutos();
     expect(fakeStoreProductsService.getProducts).toHaveBeenCalled();
