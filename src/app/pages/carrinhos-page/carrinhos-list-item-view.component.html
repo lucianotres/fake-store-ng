@@ -9,7 +9,7 @@
 }
 <td>{{carrinho?.quantidadeTotal | number : "1.0"}}</td>
 <td>{{carrinho?.total | number : "1.2-2"}}</td>
-<td>0</td>
+<td>{{totalEmCotacao === null ? "-" : totalEmCotacao  | number : "1.2-2"}}</td>
 <td class="text-nowrap">
     <button class="btn btn-primary btn-sm me-1" (click)="handleVer()">Ver</button>
     <button class="btn btn-danger btn-sm" (click)="handleRemover()">Remover</button>

@@ -3,6 +3,7 @@ import { Product } from '../models/product.model';
 import { DecimalPipe } from '@angular/common';
 import { LocalStorageDataService } from '../services/local-storage-data.service';
 import { Cotacao } from '../models/Cotacao.model';
+import { calculaEmCotacao } from '../utils/funcoes-uteis';
 
 @Component({
   selector: 'produto-list-view',
@@ -30,7 +31,7 @@ export class ProdutoListViewComponent {
       return this.product.price;
     }
     
-    return this.product.price * this.cotacaoAtual.bid;
+    return calculaEmCotacao(this.product.price, this.cotacaoAtual.bid);
   }
 
 

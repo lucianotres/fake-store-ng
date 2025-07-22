@@ -11,7 +11,7 @@
       <th>Produtos</th>
       <th>Quantidades</th>
       <th>Valor Total (USD$)</th>
-      <th>Valor Total ()</th>
+      <th>Valor Total ({{cotacao === null ? " - " : cotacao.codein + "$" }})</th>
       <th></th>
     </tr>
   </thead>
@@ -34,7 +34,7 @@
           TOTAL:
       </td>
       <td>{{total$ | async | number : "1.2-2"}}</td>
-      <td>0</td>
+      <td>{{totalEmCotacao$ | async | number : "1.2-2"}}</td>
       <td></td>
     </tr>
   </tfoot>

@@ -1,5 +1,5 @@
 import { Injectable, signal, Signal } from '@angular/core';
-import { BehaviorSubject, lastValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { map, reduce } from 'rxjs/operators';
 import { CartDTO } from '../models/Cart.model';
 import { Product } from '../models/product.model';
@@ -9,6 +9,7 @@ import { FakeStoreCartService } from './fake-store-carts.service';
 import { MinhaCotacao } from '../models/MinhaCotacao.model';
 import { AwesomeApiService } from './awesome-api.service';
 import { Cotacao } from '../models/Cotacao.model';
+import { calculaEmCotacao } from '../utils/funcoes-uteis';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +65,16 @@ export class LocalStorageDataService {
   public carrinhosTotal$(): Observable<number> {
     return this.carrinhosComProdutos$().pipe(
       map(carts => carts.reduce((acc, c) => acc + c.total, 0))
+    );
+  }
+
+  public carrinhosTotalPorCotacao$(): Observable<number | null> {
+    let cotacaoAtual = this.cotacao()?.bid;
+    if (cotacaoAtual === undefined)
+      return of(null);
+
+    return this.carrinhosComProdutos$().pipe(
+      map(carts => carts.reduce((acc, c) => acc + calculaEmCotacao(c.total, cotacaoAtual), 0))
     );
   }
 

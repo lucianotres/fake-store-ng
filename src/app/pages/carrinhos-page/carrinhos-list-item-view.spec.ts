@@ -1,20 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CarrinhosListItemView } from './carrinhos-list-item-view.component';
 import { Router } from '@angular/router';
+import { LocalStorageDataService } from '../../services/local-storage-data.service';
+import { Cotacao } from '../../models/Cotacao.model';
+import { signal } from '@angular/core';
 
 describe('CarrinhosListItemView', () => {
   let component: CarrinhosListItemView;
   let fixture: ComponentFixture<CarrinhosListItemView>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
+  const mockCotacaoSignal = signal<Cotacao | null>(null);
   
   beforeEach(async () => {
+    mockCotacaoSignal.set(null);
+
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
+
+    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['getCotacao']);
+    mockLocalStorageDataService.getCotacao.and.returnValue(mockCotacaoSignal);
     
     await TestBed.configureTestingModule({
       imports: [],
       providers: [
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }
       ]
     })
     .compileComponents();
@@ -83,6 +94,19 @@ describe('CarrinhosListItemView', () => {
   it('should render a total value column', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('td:nth-child(4)')?.innerHTML).toBe('10.09');
+  });
+
+  it('should render a "-" in total when exchange is null', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('td:nth-child(5)')?.innerHTML).toBe('-');
+  });
+
+  it('should render a correct total value when exchange is set', () => {
+    mockCotacaoSignal.set({ bid: 5.0 } as Cotacao);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('td:nth-child(5)')?.innerHTML).toBe('50.45');
   });
 
   it('should handle ver button click', () => {
