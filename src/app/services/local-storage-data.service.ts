@@ -66,8 +66,11 @@ export class LocalStorageDataService {
   public async setCotacaoSelecionada(cotacao: MinhaCotacao | null): Promise<void> {
     this.cotacaoSelecionada.set(cotacao);
 
-    let ultimaCotacao$ = this._awesomeApiService.ultimaCotacao$(cotacao?.de ?? 'USD', cotacao?.para ?? 'BRL');
-    this.cotacao.set(await lastValueFrom(ultimaCotacao$));
+    if (cotacao !== null && cotacao.de !== null && cotacao.para !== null)
+    {
+      let ultimaCotacao$ = this._awesomeApiService.ultimaCotacao$(cotacao.de, cotacao.para);
+      this.cotacao.set(await lastValueFrom(ultimaCotacao$));
+    }
   }
 
   public getCotacao(): Signal<Cotacao | null> {

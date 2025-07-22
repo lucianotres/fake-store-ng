@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../models/product.model';
 import { DecimalPipe } from '@angular/common';
+import { LocalStorageDataService } from '../services/local-storage-data.service';
+import { Cotacao } from '../models/Cotacao.model';
 
 @Component({
   selector: 'produto-list-view',
@@ -21,6 +23,24 @@ export class ProdutoListViewComponent {
   @Output()
   onSelecionar = new EventEmitter<Product>();
 
+  public cotacaoAtual: Cotacao | null = null;
+
+  public get valorConvertido(): number {
+    if (this.cotacaoAtual === null || this.cotacaoAtual.bid === undefined) {
+      return this.product.price;
+    }
+    
+    return this.product.price * this.cotacaoAtual.bid;
+  }
+
+
+  constructor(
+    private localStorageDataService: LocalStorageDataService
+  ) {
+    effect(() => {
+      this.cotacaoAtual = this.localStorageDataService.getCotacao()();
+    });
+  }
   
   handleEditar() {
     this.onEditar.emit(this.product);

@@ -9,7 +9,10 @@
         <div class="card-footer">
             <div>
                 Preço: <strong>$ {{product.price | number:'1.2-2'}}</strong>
-                
+                @if (cotacaoAtual != null)
+                {
+                    <span class="cotacao">&nbsp; em cotação: <strong>{{valorConvertido | number:'1.2-2'}}</strong></span>
+                }
             </div>
             @if (onSelecionar.observed)
             {
