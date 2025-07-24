@@ -1,1 +1,55 @@
-<p>carrinho.component works!</p>
+@if (carrinho$ | async; as carrinho) {
+  <div>
+    <button class="btn btn-success" (click)="HandleAddProduto()">Adicionar Produto</button>
+    <div>Data: {{carrinho.dados.date | date : 'dd/MM/yyyy'}}</div>
+  </div>
+  <div>
+    <h4>Produtos</h4>
+    @if (carrinho.dados.products.length === 0) {
+      <p>Nenhum produto adicionado.</p>
+    }
+    @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Preço</th>
+            <th>Quantidade</th>
+            <th>Total</th>
+            <th>Total Cotação</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of carrinho.items; track item.productId) {
+            <tr>
+              <td>{{item.product?.description}}</td>
+              <td>$ {{item.product?.price | number : '1.2-2'}}</td>
+              <td>
+                  @if (item === alteraQtde)
+                  {
+                    <input type="number" min="1" style="width: 50px;" class="me-1" [(ngModel)]="item.quantity" />
+                    <button class="btn btn-sm btn-success me-1" (click)="HandleAlterarQtdeSalva(item)">Salvar</button>
+                    <button class="btn btn-sm btn-danger" (click)="HandleAlterarQtde(item)">Cancela</button>
+                  }
+                  @else
+                  {            
+                    <span> {{item.quantity | number : '1.0'}} </span>
+                    <button class="btn btn-sm btn-primary" (click)="HandleAlterarQtde(item)">Alterar</button>
+                  }
+              </td>
+              <td>$ {{item.total | number : '1.2-2'}}</td>
+              <td>-</td>
+              <td>
+                <button class="btn btn-sm btn-danger" (click)="HandleRemoverItem(item)">Remover</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}
+@else {
+  <p>Carregando carrinho...</p>
+}
