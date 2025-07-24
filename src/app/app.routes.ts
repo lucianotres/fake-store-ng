@@ -26,6 +26,12 @@ export const routes: Routes = [
     title: 'Fake Store - Carrinhos de Compras',
   },
   {
+    path: 'carrinho',
+    loadComponent: () => import('./pages/carrinho-page/carrinho-page.component')
+      .then(m => m.CarrinhoPageComponent),
+    title: 'Fake Store - Carrinho de Compras n',
+  },
+  {
     path: "**",
     redirectTo: "/"
   }
