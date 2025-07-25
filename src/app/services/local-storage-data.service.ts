@@ -8,8 +8,8 @@ import { FakeStoreProductsService } from './fake-store-products.service';
 import { FakeStoreCartService } from './fake-store-carts.service';
 import { MinhaCotacao } from '../models/MinhaCotacao.model';
 import { AwesomeApiService } from './awesome-api.service';
-import { Cotacao } from '../models/Cotacao.model';
 import { calculaEmCotacao } from '../utils/funcoes-uteis';
+import { CotacaoService } from './cotacao.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +23,9 @@ export class LocalStorageDataService {
   readonly carrinhos$: Observable<CartDTO[]> = this._carts.asObservable();
 
   private cotacaoSelecionada = signal<MinhaCotacao | null>(null);
-  private cotacao = signal<Cotacao | null>(null);
-  
 
   constructor(
+    private cotacao: CotacaoService,
     private _productService: FakeStoreProductsService,
     private _cartService: FakeStoreCartService,
     private _awesomeApiService: AwesomeApiService
@@ -69,7 +68,7 @@ export class LocalStorageDataService {
   }
 
   public carrinhosTotalPorCotacao$(): Observable<number | null> {
-    let cotacaoAtual = this.cotacao()?.bid;
+    let cotacaoAtual = this.cotacao.getCotacao()()?.bid;
     if (cotacaoAtual === undefined)
       return of(null);
 
@@ -88,12 +87,12 @@ export class LocalStorageDataService {
     if (cotacao !== null && cotacao.de !== null && cotacao.para !== null)
     {
       let ultimaCotacao$ = this._awesomeApiService.ultimaCotacao$(cotacao.de, cotacao.para);
-      this.cotacao.set(await lastValueFrom(ultimaCotacao$));
+      this.cotacao.setCotacao(await lastValueFrom(ultimaCotacao$));
+    }
+    else
+    {
+      this.cotacao.setCotacao(null);
     }
   }
-
-  public getCotacao(): Signal<Cotacao | null> {
-    return this.cotacao;
-  }
-
+  
 }

@@ -3,6 +3,6 @@
 
 <p>Escolha uma opção no menu para iniciar</p>
 
-@if(cotacaoEscolhida !== null) {
-  <p>Escolhido cotação atual em {{cotacaoEscolhida.cotacao}}: <strong>{{cotacaoEscolhida.para}} = {{cotacao?.bid}}</strong></p>
+@if(cotacao !== null) {
+  <p>Escolhido cotação atual em {{cotacao.name}}: <strong>{{cotacao.codein}} = {{cotacao.bid}}</strong></p>
 }

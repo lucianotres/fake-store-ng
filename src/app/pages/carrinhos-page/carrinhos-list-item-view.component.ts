@@ -4,6 +4,7 @@ import { DecimalPipe } from "@angular/common";
 import { Router } from "@angular/router";
 import { LocalStorageDataService } from "../../services/local-storage-data.service";
 import { calculaEmCotacao } from "../../utils/funcoes-uteis";
+import { Cotacao } from "../../models/Cotacao.model";
 
 @Component({
   selector: '[carrinhos-list-item-view]',
@@ -27,7 +28,7 @@ export class CarrinhosListItemView {
     private localStorageDataService: LocalStorageDataService
   ) {
     effect(() => {
-      let cotacaoAtual = this.localStorageDataService.getCotacao()();
+      let cotacaoAtual = null as Cotacao | null; //VER this.localStorageDataService.getCotacao()();
       if (cotacaoAtual === null || cotacaoAtual.bid === undefined)
         this.cotacao = null;
       else

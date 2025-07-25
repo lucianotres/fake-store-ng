@@ -25,7 +25,7 @@ export class CarrinhosPageComponent implements OnInit {
     this.total$ = this.localStorageDataService.carrinhosTotal$();
 
     effect(() => {
-      this.cotacao = this.localStorageDataService.getCotacao()();
+      this.cotacao = null;//VER this.localStorageDataService.getCotacao()();
       this.totalEmCotacao$ = this.localStorageDataService.carrinhosTotalPorCotacao$();
     });
   }

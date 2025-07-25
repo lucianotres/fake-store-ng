@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
-import { LocalStorageDataService } from '../../services/local-storage-data.service';
 import { signal } from '@angular/core';
+import { Cotacao } from '../../models/Cotacao.model';
+import { CotacaoService } from '../../services/cotacao.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
+  let mockCotacaoService: jasmine.SpyObj<CotacaoService>;
+
 
   beforeEach(async () => {
-    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['getCotacaoSelecionada', 'getCotacao']);
-    mockLocalStorageDataService.getCotacaoSelecionada.and.returnValue(signal(null));
-    mockLocalStorageDataService.getCotacao.and.returnValue(signal(null));
-    
+    mockCotacaoService = jasmine.createSpyObj('CotacaoService', ['getCotacao']);
+    mockCotacaoService.getCotacao.and.returnValue(signal<Cotacao | null>(null));
+        
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
       providers: [
-        { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }
+        { provide: CotacaoService, useValue: mockCotacaoService }
       ]
     })
     .compileComponents();

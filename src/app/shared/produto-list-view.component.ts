@@ -1,9 +1,9 @@
 import { Component, effect, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../models/product.model';
 import { DecimalPipe } from '@angular/common';
-import { LocalStorageDataService } from '../services/local-storage-data.service';
 import { Cotacao } from '../models/Cotacao.model';
 import { calculaEmCotacao } from '../utils/funcoes-uteis';
+import { CotacaoService } from '../services/cotacao.service';
 
 @Component({
   selector: 'produto-list-view',
@@ -36,10 +36,10 @@ export class ProdutoListViewComponent {
 
 
   constructor(
-    private localStorageDataService: LocalStorageDataService
+    private cotacaoService: CotacaoService
   ) {
     effect(() => {
-      this.cotacaoAtual = this.localStorageDataService.getCotacao()();
+      this.cotacaoAtual = this.cotacaoService.getCotacao()();
     });
   }
   
