@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
-import { signal } from '@angular/core';
-import { Cotacao } from '../../models/Cotacao.model';
 import { CotacaoService } from '../../services/cotacao.service';
 
 describe('HomeComponent', () => {
@@ -9,10 +7,9 @@ describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let mockCotacaoService: jasmine.SpyObj<CotacaoService>;
 
-
   beforeEach(async () => {
     mockCotacaoService = jasmine.createSpyObj('CotacaoService', ['getCotacao']);
-    mockCotacaoService.getCotacao.and.returnValue(signal<Cotacao | null>(null));
+    mockCotacaoService.getCotacao.and.returnValue(null);
         
     await TestBed.configureTestingModule({
       imports: [HomeComponent],

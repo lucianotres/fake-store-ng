@@ -13,7 +13,7 @@ export class CotacaoService {
     this.cotacao.set(novaCotacao);
   }
 
-  public getCotacao(): Signal<Cotacao | null> {
-    return this.cotacao;
+  public getCotacao(): Cotacao | null {
+    return this.cotacao();
   }
 }

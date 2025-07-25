@@ -39,7 +39,7 @@ export class ProdutoListViewComponent {
     private cotacaoService: CotacaoService
   ) {
     effect(() => {
-      this.cotacaoAtual = this.cotacaoService.getCotacao()();
+      this.cotacaoAtual = this.cotacaoService.getCotacao();
     });
   }
   

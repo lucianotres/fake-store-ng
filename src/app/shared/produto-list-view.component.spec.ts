@@ -12,7 +12,7 @@ describe('ProdutoListViewComponent', () => {
 
   beforeEach(async () => {
     mockCotacaoService = jasmine.createSpyObj('CotacaoService', ['getCotacao']);
-    mockCotacaoService.getCotacao.and.returnValue(signal<Cotacao | null>(null));
+    mockCotacaoService.getCotacao.and.returnValue(null);
 
     await TestBed.configureTestingModule({
       imports: [ProdutoListViewComponent],

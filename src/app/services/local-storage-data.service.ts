@@ -1,6 +1,5 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { computed, Injectable, signal, Signal } from '@angular/core';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
-import { map, reduce } from 'rxjs/operators';
 import { CartDTO } from '../models/Cart.model';
 import { Product } from '../models/product.model';
 import { Carrinho, CarrinhoItem } from '../models/Carrinho.model';
@@ -8,7 +7,6 @@ import { FakeStoreProductsService } from './fake-store-products.service';
 import { FakeStoreCartService } from './fake-store-carts.service';
 import { MinhaCotacao } from '../models/MinhaCotacao.model';
 import { AwesomeApiService } from './awesome-api.service';
-import { calculaEmCotacao } from '../utils/funcoes-uteis';
 import { CotacaoService } from './cotacao.service';
 
 @Injectable({
@@ -18,18 +16,31 @@ export class LocalStorageDataService {
 
   private readonly _carts = new BehaviorSubject<CartDTO[]>([]);
   private readonly _products = new BehaviorSubject<Product[]>([]);
-
+  
   readonly products$: Observable<Product[]> = this._products.asObservable();
-  readonly carrinhos$: Observable<CartDTO[]> = this._carts.asObservable();
+  readonly carts$: Observable<CartDTO[]> = this._carts.asObservable();
 
   private cotacaoSelecionada = signal<MinhaCotacao | null>(null);
+
+  readonly carrinhos = signal<Carrinho[]>([]);
+  readonly carrinhosTotal: Signal<number>;
+  readonly carrinhosTotalPorCotacao: Signal<number | null>;
 
   constructor(
     private cotacao: CotacaoService,
     private _productService: FakeStoreProductsService,
     private _cartService: FakeStoreCartService,
     private _awesomeApiService: AwesomeApiService
-  ) { }
+  ) { 
+    this.carrinhosTotal = computed(() => this.carrinhos().reduce((acc, c) => acc + c.total(), 0));
+    this.carrinhosTotalPorCotacao = computed(() => {
+      const carrinhosLocal = this.carrinhos();
+      return (
+        carrinhosLocal.reduce((acc, c) => acc && (c.totalCotado() === null), true) ?
+        null :
+        this.carrinhos().reduce((acc, c) => acc + (c.totalCotado() ?? 0), 0));
+    });
+  }
 
   public async CarregaProdutos(): Promise<void> {
     this._products.next(await lastValueFrom(this._productService.getProducts()));
@@ -41,40 +52,15 @@ export class LocalStorageDataService {
 
   public async CarregarCarrinhosProdutos(): Promise<void> {
     this._products.next(await lastValueFrom(this._productService.getProducts()));
-    this._carts.next(await lastValueFrom(this._cartService.getCarts$()));
-  }
-  
-  public carrinhosComProdutos$(): Observable<Carrinho[]> {
-    return this.carrinhos$.pipe(
-      map(carts => carts.map(cart => {
-        const carrinho = new Carrinho();
-        carrinho.dados = cart;
-        carrinho.items = cart.products.map(p => {
-          const item = new CarrinhoItem();
-          item.productId = p.productId;
-          item.quantity = p.quantity;
-          item.product = this._products.value.find(product => product.id === p.productId);
-          return item;
-        });
-        return carrinho;
-      }))
-    );
-  }
 
-  public carrinhosTotal$(): Observable<number> {
-    return this.carrinhosComProdutos$().pipe(
-      map(carts => carts.reduce((acc, c) => acc + c.total, 0))
-    );
-  }
+    let carts = await lastValueFrom(this._cartService.getCarts$());
+    this._carts.next(carts);
 
-  public carrinhosTotalPorCotacao$(): Observable<number | null> {
-    let cotacaoAtual = this.cotacao.getCotacao()()?.bid;
-    if (cotacaoAtual === undefined)
-      return of(null);
-
-    return this.carrinhosComProdutos$().pipe(
-      map(carts => carts.reduce((acc, c) => acc + calculaEmCotacao(c.total, cotacaoAtual), 0))
-    );
+    this.carrinhos.set(carts.map(cart => {
+      const carrinho = new Carrinho(this.cotacao, cart);
+      carrinho.items().forEach(i => i.product.set(this._products.value.find(p => p.id === i.item().productId) ?? null));
+      return carrinho;
+    }));
   }
 
   public getCotacaoSelecionada(): Signal<MinhaCotacao | null> {

@@ -1,15 +1,15 @@
 <td>
     {{carrinho?.dados?.id}}&ensp;
 </td>
-@if (carrinho?.items?.length === 0) {
+@if (carrinho?.items()?.length === 0) {
     <td>Sem</td>
 }
 @else {
-    <td>{{carrinho?.items?.length}}</td>
+    <td>{{carrinho?.items()?.length}}</td>
 }
-<td>{{carrinho?.quantidadeTotal | number : "1.0"}}</td>
-<td>{{carrinho?.total | number : "1.2-2"}}</td>
-<td>{{totalEmCotacao === null ? "-" : totalEmCotacao  | number : "1.2-2"}}</td>
+<td>{{carrinho?.quantidadeTotal() | number : "1.0"}}</td>
+<td>{{carrinho?.total() | number : "1.2-2"}}</td>
+<td>{{carrinho?.totalCotado() === null ? "-" : carrinho?.totalCotado() | number : "1.2-2"}}</td>
 <td class="text-nowrap">
     <button class="btn btn-primary btn-sm me-1" (click)="handleVer()">Ver</button>
     <button class="btn btn-danger btn-sm" (click)="handleRemover()">Remover</button>

@@ -5,7 +5,7 @@
   </div>
   <div>
     <h4>Produtos</h4>
-    @if (carrinho.dados.products.length === 0) {
+    @if (carrinho.items().length === 0) {
       <p>Nenhum produto adicionado.</p>
     }
     @else {
@@ -21,24 +21,24 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of carrinho.items; track item.productId) {
+          @for (item of carrinho.items(); track item.item().productId) {
             <tr>
-              <td>{{item.product?.description}}</td>
-              <td>$ {{item.product?.price | number : '1.2-2'}}</td>
+              <td>{{item.product()?.description}}</td>
+              <td>$ {{item.product()?.price | number : '1.2-2'}}</td>
               <td>
                   @if (item === alteraQtde)
                   {
-                    <input type="number" min="1" style="width: 50px;" class="me-1" [(ngModel)]="item.quantity" />
+                    <input type="number" min="1" style="width: 50px;" class="me-1" [(ngModel)]="item.item().quantity" />
                     <button class="btn btn-sm btn-success me-1" (click)="HandleAlterarQtdeSalva(item)">Salvar</button>
                     <button class="btn btn-sm btn-danger" (click)="HandleAlterarQtde(item)">Cancela</button>
                   }
                   @else
                   {            
-                    <span> {{item.quantity | number : '1.0'}} </span>
+                    <span> {{item.item().quantity | number : '1.0'}} </span>
                     <button class="btn btn-sm btn-primary" (click)="HandleAlterarQtde(item)">Alterar</button>
                   }
               </td>
-              <td>$ {{item.total | number : '1.2-2'}}</td>
+              <td>$ {{item.total() | number : '1.2-2'}}</td>
               <td>-</td>
               <td>
                 <button class="btn btn-sm btn-danger" (click)="HandleRemoverItem(item)">Remover</button>

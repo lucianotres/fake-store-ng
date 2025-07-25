@@ -115,13 +115,16 @@ describe("LocalStorageDataService", () => {
 
   it("should return carrinhos with products", async ()=> {
     await localStorageDataService.CarregarCarrinhosProdutos();
-    localStorageDataService.carrinhosComProdutos$().subscribe(carrinhos => {
-      expect(carrinhos.length).toBe(1);
-      expect(carrinhos[0].dados).toEqual(mockCarts[0]);
-      expect(carrinhos[0].items.length).toBe(2);
-      expect(carrinhos[0].items[0].product).toEqual(mockProducts[0]);
-      expect(carrinhos[0].items[1].product).toEqual(mockProducts[1]);
-    });
+    
+    const carrinhos = localStorageDataService.carrinhos();
+        
+    expect(carrinhos.length).toBe(1);
+    expect(carrinhos[0].dados).toEqual(mockCarts[0]);
+
+    const items = carrinhos[0].items();
+    expect(items.length).toBe(2);
+    expect(items[0].product()).toEqual(mockProducts[0]);
+    expect(items[1].product()).toEqual(mockProducts[1]);  
   });
 
 });

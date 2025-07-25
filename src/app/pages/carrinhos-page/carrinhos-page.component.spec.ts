@@ -6,44 +6,42 @@ import { Subject, of } from 'rxjs';
 import { Carrinho } from '../../models/Carrinho.model';
 import { Cotacao } from '../../models/Cotacao.model';
 import { signal } from '@angular/core';
-
-const mockCarrinhos: Carrinho[] = [
-  {
-    dados: { 
-      id: 1,
-      userId: 1,
-      date: new Date().toISOString(),
-      products: []
-    }, 
-    items: [],
-    total: 0,
-    quantidadeTotal: 0
-  } 
-];
+import { CotacaoService } from '../../services/cotacao.service';
 
 describe('CarrinhosPageComponent', () => {
   let component: CarrinhosPageComponent;
   let fixture: ComponentFixture<CarrinhosPageComponent>;
   let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
-  const mockCotacaoSignal = signal<Cotacao | null>(null);
-  const mockTotalEmCotacao = new Subject<number | null>();
+  let mockCotacaoService: CotacaoService;
+  const mockCarrinhosSignal = signal<Carrinho[]>([]);
+  const mockTotalSignal = signal<number>(10.09);
+  const mockTotalEmCotacaoSignal = signal<number | null>(null);
 
   beforeEach(async () => {
-    mockCotacaoSignal.set(null);
-    mockTotalEmCotacao.next(null);
+    mockCotacaoService = new CotacaoService();
+    
+    mockCarrinhosSignal.set([
+      new Carrinho(mockCotacaoService, { 
+        id: 1,
+        userId: 1,
+        date: new Date().toISOString(),
+        products: []
+      })
+    ]);
 
-    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', 
-      ['CarregarCarrinhosProdutos', 'carrinhosComProdutos$', 'carrinhosTotal$', 'getCotacao', 'carrinhosTotalPorCotacao$']);
+    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService',
+      ['CarregarCarrinhosProdutos'], {
+        carrinhos: mockCarrinhosSignal,
+        carrinhosTotal: mockTotalSignal,
+        carrinhosTotalPorCotacao: mockTotalEmCotacaoSignal
+      });
     mockLocalStorageDataService.CarregarCarrinhosProdutos.and.returnValue(Promise.resolve());
-    mockLocalStorageDataService.carrinhosComProdutos$.and.returnValue(of(mockCarrinhos));
-    mockLocalStorageDataService.carrinhosTotal$.and.returnValue(of(10.09));
-    mockLocalStorageDataService.carrinhosTotalPorCotacao$.and.returnValue(mockTotalEmCotacao);
-    mockLocalStorageDataService.getCotacao.and.returnValue(mockCotacaoSignal);
-
+        
     await TestBed.configureTestingModule({
       imports: [CarrinhosPageComponent],
       providers: [
-        { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }
+        { provide: CotacaoService, useValue: mockCotacaoService },
+        { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }        
       ]      
     })
     .compileComponents();
@@ -73,7 +71,7 @@ describe('CarrinhosPageComponent', () => {
   });
 
   it('should render a total in exchange when exchange is set', () => {
-    mockTotalEmCotacao.next(50.45);
+    mockTotalEmCotacaoSignal.set(50.45);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -86,7 +84,7 @@ describe('CarrinhosPageComponent', () => {
   });
 
   it('should render the currency identifier in total when exchange is set', () => {
-    mockCotacaoSignal.set({ codein: "BRL" } as Cotacao);
+    mockCotacaoService.setCotacao({ codein: "BRL" } as Cotacao);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;

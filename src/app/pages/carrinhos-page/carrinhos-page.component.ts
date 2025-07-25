@@ -1,10 +1,10 @@
 import { Component, effect, OnInit } from '@angular/core';
 import { LocalStorageDataService } from '../../services/local-storage-data.service';
-import { Observable, of } from 'rxjs';
 import { Carrinho } from '../../models/Carrinho.model';
 import { CommonModule } from '@angular/common';
 import { CarrinhosListItemView } from "./carrinhos-list-item-view.component";
 import { Cotacao } from '../../models/Cotacao.model';
+import { CotacaoService } from '../../services/cotacao.service';
 
 @Component({
   selector: 'app-carrinhos-page.component',
@@ -13,24 +13,34 @@ import { Cotacao } from '../../models/Cotacao.model';
   styleUrl: './carrinhos-page.component.css'
 })
 export class CarrinhosPageComponent implements OnInit {
-  carrinhos$: Observable<Carrinho[]> = of([]);
-  total$: Observable<number> = of(0);
-  totalEmCotacao$: Observable<number | null> = of(null);
+  carrinhos: Carrinho[] = [];
+  total: number = 0;
+  totalEmCotacao: number | null = null;
   cotacao: Cotacao | null = null;
-
+  
   constructor(
-    private localStorageDataService: LocalStorageDataService
-  ) { 
-    this.carrinhos$ = this.localStorageDataService.carrinhosComProdutos$();
-    this.total$ = this.localStorageDataService.carrinhosTotal$();
+    private localStorageDataService: LocalStorageDataService,
+    private cotacaoService: CotacaoService
+  ) {    
+    effect(() => {
+      this.carrinhos = this.localStorageDataService.carrinhos();
+    });
 
     effect(() => {
-      this.cotacao = null;//VER this.localStorageDataService.getCotacao()();
-      this.totalEmCotacao$ = this.localStorageDataService.carrinhosTotalPorCotacao$();
+      this.total = this.localStorageDataService.carrinhosTotal();
+      this.totalEmCotacao = this.localStorageDataService.carrinhosTotalPorCotacao();
+    });
+
+    effect(() => {
+      this.cotacao = this.cotacaoService.getCotacao();
     });
   }
 
   async ngOnInit(): Promise<void> {
+    await this.localStorageDataService.CarregarCarrinhosProdutos();
+  }
+
+  public async handleAtualizar(): Promise<void> {
     await this.localStorageDataService.CarregarCarrinhosProdutos();
   }
 

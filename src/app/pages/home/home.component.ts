@@ -17,7 +17,7 @@ export class HomeComponent {
     private cotacaoService: CotacaoService
   ) {
     effect(() => {
-      this.cotacao = this.cotacaoService.getCotacao()();
+      this.cotacao = this.cotacaoService.getCotacao();
     });
   }
   

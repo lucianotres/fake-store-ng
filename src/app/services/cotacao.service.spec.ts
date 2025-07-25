@@ -29,11 +29,11 @@ describe('CotacaoService', () => {
       "create_date": new Date().toISOString()
     };
     service.setCotacao(cotacao);
-    expect(service.getCotacao()()).toEqual(cotacao);
+    expect(service.getCotacao()).toEqual(cotacao);
   });
 
   it('should set a null cotação', () => {
     service.setCotacao(null);
-    expect(service.getCotacao()()).toBeNull();
+    expect(service.getCotacao()).toBeNull();
   });
 });
