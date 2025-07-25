@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import { Carrinho, CarrinhoItem } from '../../models/Carrinho.model';
-import { Observable, of } from 'rxjs';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageDataService } from '../../services/local-storage-data.service';
 
 @Component({
@@ -13,30 +12,67 @@ import { LocalStorageDataService } from '../../services/local-storage-data.servi
   styleUrl: './carrinho-page.component.css'
 })
 export class CarrinhoPageComponent implements OnInit {
-  public carrinho$: Observable<Carrinho | null> = of(null);
-  public alteraQtde: CarrinhoItem | null = null;
-  public alteraQtdeOriginal: number = 0;
-
+  id: number | null = null;
+  public carrinho: Carrinho | null = null;
+  public itemAlteraQtde: CarrinhoItem | null = null;
+  
   constructor(
-    private router: Router
-    //private localStorageData: LocalStorageDataService
+    private router: Router,
+    private route: ActivatedRoute,
+    private localStorageData: LocalStorageDataService
   ) { }
 
   ngOnInit(): void {
-    this.carrinho$ = of(null);
+    const idParam = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = isNaN(idParam) ? null : idParam;
+
+    this.carregaCarrinho();
+  }
+
+  async carregaCarrinho(): Promise<void>
+  {
+    if (this.id === null)
+    {
+      this.carrinho = null;
+      return;
+    }
+    
+    this.carrinho = await this.localStorageData.CarregaCarrinhosProdutos(this.id);
+  }
+
+  private _originalQtde: number = 0;
+  private _novaQtde: number = 0;
+  public get novaQtde(): number {
+    return this._novaQtde;
+  }
+  public set novaQtde(value: number) {
+    this._novaQtde = value;
+    this.definirQtdeItemSelecionado();
+  }
+
+  definirQtdeItemSelecionado(): void
+  {
+    if (this.itemAlteraQtde === null)
+      return;
+
+    this.itemAlteraQtde.item.set({
+      ...this.itemAlteraQtde.item(), 
+      quantity: this._novaQtde
+    });
   }
 
   public HandleAlterarQtde(carrinhoItem: CarrinhoItem): void
   {
-    if (this.alteraQtde === carrinhoItem)
+    if (this.itemAlteraQtde === carrinhoItem)
     {
-        carrinhoItem.item().quantity = this.alteraQtdeOriginal; //restaura a quantidade original
-        this.alteraQtde = null; //se já estava selecionado, desmarca
+        this.novaQtde = this._originalQtde;
+        this.itemAlteraQtde = null;
         return;
     }
 
-    this.alteraQtdeOriginal = carrinhoItem.item().quantity;
-    this.alteraQtde = carrinhoItem;
+    this._novaQtde = carrinhoItem.item().quantity;
+    this._originalQtde = this._novaQtde;
+    this.itemAlteraQtde = carrinhoItem;
   }
 
   public HandleAlterarQtdeSalva(carrinhoItem: CarrinhoItem): void

@@ -20,4 +20,9 @@ export class FakeStoreCartService {
       this.log.logInformation("Buscando lista de carrinhos...");
       return this.http.get<CartDTO[]>(`${this.baseUrl}/carts`);
     }
+
+    getCart$(id: number): Observable<CartDTO | null> {
+      this.log.logInformation(`Busca carrinho id ${id}...`);
+      return this.http.get<CartDTO | null>(`${this.baseUrl}/carts/${id}`);
+    }
 }

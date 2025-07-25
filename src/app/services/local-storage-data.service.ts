@@ -51,7 +51,7 @@ export class LocalStorageDataService {
   }
 
   public async CarregarCarrinhosProdutos(): Promise<void> {
-    this._products.next(await lastValueFrom(this._productService.getProducts()));
+    await this.CarregaProdutos();
 
     let carts = await lastValueFrom(this._cartService.getCarts$());
     this._carts.next(carts);
@@ -61,6 +61,18 @@ export class LocalStorageDataService {
       carrinho.items().forEach(i => i.product.set(this._products.value.find(p => p.id === i.item().productId) ?? null));
       return carrinho;
     }));
+  }
+
+  public async CarregaCarrinhosProdutos(id: number): Promise<Carrinho | null> {
+    await this.CarregaProdutos();
+
+    const cart = await lastValueFrom(this._cartService.getCart$(id));    
+    if (cart === null) 
+      return null;
+
+    const carrinho = new Carrinho(this.cotacao, cart);
+    carrinho.items().forEach(i => i.product.set(this._products.value.find(p => p.id === i.item().productId) ?? null));
+    return carrinho;
   }
 
   public getCotacaoSelecionada(): Signal<MinhaCotacao | null> {
