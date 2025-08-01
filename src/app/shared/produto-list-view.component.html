@@ -16,12 +16,12 @@
             </div>
             @if (onSelecionar.observed)
             {
-                <button class="btn btn-sm btn-primary" (onclick)="handleSelecionar()">Selecionar</button>
+                <button class="btn btn-sm btn-primary" (click)="handleSelecionar()">Selecionar</button>
             }
             @else
             {
-                <button class="btn btn-sm btn-primary" (onclick)="handleEditar()">Editar</button>
-                <button class="btn btn-sm btn-danger" (onclick)="handleExcluir()">Excluir</button>
+                <button class="btn btn-sm btn-primary" (click)="handleEditar()">Editar</button>
+                <button class="btn btn-sm btn-danger" (click)="handleExcluir()">Excluir</button>
             }
         </div>
     </div>

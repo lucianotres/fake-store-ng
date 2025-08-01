@@ -1,9 +1,8 @@
 <h2>Nossos Produtos</h2>
 
-@let products = products$ | async;
-@if (products) {
-  @for(product of products; track product.id) {
-    <produto-list-view [product]="product" />
+@if (products$ | async; as products) {
+  @for (product of products; track product.id) {
+    <produto-list-view [product]="product" (onSelecionar)="handleSelecionar($event)"/>
   }
   @empty {
     <p>Nenhum produto encontrado.</p>

@@ -72,6 +72,14 @@ export class LocalStorageDataService {
 
     const carrinho = new Carrinho(this.cotacao, cart);
     carrinho.items().forEach(i => i.product.set(this._products.value.find(p => p.id === i.item().productId) ?? null));
+
+    let carrinhosAtual = this.carrinhos();
+    carrinhosAtual.splice(
+      carrinhosAtual.findIndex(c => c.dados.id === cart.id), 1,
+      carrinho      
+    );
+    this.carrinhos.set(carrinhosAtual);
+
     return carrinho;
   }
 

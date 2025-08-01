@@ -63,4 +63,26 @@ export class Carrinho {
     });
   }
 
+  adicionarProduto(product: Product) {
+    const itensAtual = this.items();
+
+    const itemPorProduto = itensAtual.find(f => f.item().productId === product.id);
+    if (itemPorProduto !== undefined) {
+      const item = itemPorProduto.item();
+      itemPorProduto.item.set({
+        ...item,
+        quantity: item.quantity + 1
+      });
+      return;
+    }
+
+    const novoItem = new CarrinhoItem(this.cotacaoService);
+    novoItem.item.set({
+      productId: product.id,
+      quantity: 1
+    });
+    novoItem.product.set(product);
+    itensAtual.push(novoItem);
+    this.items.set(itensAtual);
+  }
 }

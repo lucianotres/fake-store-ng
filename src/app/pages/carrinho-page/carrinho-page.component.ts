@@ -37,6 +37,13 @@ export class CarrinhoPageComponent implements OnInit {
       return;
     }
     
+    const carrinhoLocalizado = this.localStorageData.carrinhos().find(c => c.dados.id === this.id);
+    if (carrinhoLocalizado !== undefined)
+    {
+      this.carrinho = carrinhoLocalizado;
+      return;
+    }
+
     this.carrinho = await this.localStorageData.CarregaCarrinhosProdutos(this.id);
   }
 
@@ -87,7 +94,7 @@ export class CarrinhoPageComponent implements OnInit {
 
   public HandleAddProduto(): void
   {
-    this.router.navigate([`/produtos?addToCart=${1}`]);
+    this.router.navigate(['/produtos'], { queryParams: { addToCart: this.id } });
   }
 
 }
