@@ -42,6 +42,7 @@ export class ProdutosPageComponent implements OnInit {
     }
 
     carrinho.adicionarProduto(product);
+    this.localDataService.SalvarCarrinho(carrinho);
     this.location.back();
   }
 }

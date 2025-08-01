@@ -62,10 +62,7 @@ export class CarrinhoPageComponent implements OnInit {
     if (this.itemAlteraQtde === null)
       return;
 
-    this.itemAlteraQtde.item.set({
-      ...this.itemAlteraQtde.item(), 
-      quantity: this._novaQtde
-    });
+    this.itemAlteraQtde.alterarQuantidade(this._novaQtde);
   }
 
   public HandleAlterarQtde(carrinhoItem: CarrinhoItem): void
@@ -73,6 +70,7 @@ export class CarrinhoPageComponent implements OnInit {
     if (this.itemAlteraQtde === carrinhoItem)
     {
         this.novaQtde = this._originalQtde;
+        this.itemAlteraQtde.alterarQuantidade(this._originalQtde);
         this.itemAlteraQtde = null;
         return;
     }
@@ -84,12 +82,20 @@ export class CarrinhoPageComponent implements OnInit {
 
   public HandleAlterarQtdeSalva(carrinhoItem: CarrinhoItem): void
   {
-    alert('a fazer');
+    if (this.carrinho === null)
+      return;
+
+    this.localStorageData.SalvarCarrinho(this.carrinho);
+    this.itemAlteraQtde = null;
   }
 
   public HandleRemoverItem(carrinhoItem: CarrinhoItem): void
   {
-    alert('a fazer');
+    if (this.carrinho === null)
+      return;
+
+    const idRem = carrinhoItem.item().productId;
+    this.carrinho.removerProduto(idRem);
   }
 
   public HandleAddProduto(): void

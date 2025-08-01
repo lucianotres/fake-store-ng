@@ -83,6 +83,11 @@ export class LocalStorageDataService {
     return carrinho;
   }
 
+  public async SalvarCarrinho(carrinho: Carrinho): Promise<void> {
+    const cart = carrinho.getNovosDados();
+    await lastValueFrom(this._cartService.putCart$(cart));
+  }
+
   public getCotacaoSelecionada(): Signal<MinhaCotacao | null> {
     return this.cotacaoSelecionada;
   }

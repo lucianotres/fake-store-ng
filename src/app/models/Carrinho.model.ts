@@ -29,6 +29,13 @@ export class CarrinhoItem {
       return cotacao === null ? null : calculaEmCotacao(this.total(), cotacao.bid ?? 0);
     });
   }
+
+  alterarQuantidade(novaQtde: number) {
+    this.item.set({
+      ...this.item(),
+      quantity: novaQtde
+    });
+  }
 }
 
 export class Carrinho {
@@ -68,11 +75,7 @@ export class Carrinho {
 
     const itemPorProduto = itensAtual.find(f => f.item().productId === product.id);
     if (itemPorProduto !== undefined) {
-      const item = itemPorProduto.item();
-      itemPorProduto.item.set({
-        ...item,
-        quantity: item.quantity + 1
-      });
+      itemPorProduto.alterarQuantidade(itemPorProduto.item().quantity + 1);      
       return;
     }
 
@@ -84,5 +87,28 @@ export class Carrinho {
     novoItem.product.set(product);
     itensAtual.push(novoItem);
     this.items.set(itensAtual);
+  }
+
+  removerProduto(productId: number) {
+    const itemLocalizado = this.items().find(f => f.item().productId === productId);
+    if (itemLocalizado === undefined)
+      return;
+
+    const itensAtual = this.items();
+    itensAtual.splice(itensAtual.indexOf(itemLocalizado), 1);
+    this.items.set(itensAtual);
+  }
+
+  getNovosDados(): CartDTO {
+    return {
+      ...this.dados,
+      products: this.items().map(item => {
+        const x = item.item();
+        return {
+          productId: x.productId,
+          quantity: x.quantity
+        };
+      })
+    };
   }
 }
