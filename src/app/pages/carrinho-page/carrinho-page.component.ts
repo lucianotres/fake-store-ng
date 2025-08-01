@@ -96,6 +96,7 @@ export class CarrinhoPageComponent implements OnInit {
 
     const idRem = carrinhoItem.item().productId;
     this.carrinho.removerProduto(idRem);
+    this.localStorageData.SalvarCarrinho(this.carrinho);
   }
 
   public HandleAddProduto(): void

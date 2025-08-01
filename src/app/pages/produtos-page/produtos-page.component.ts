@@ -24,9 +24,10 @@ export class ProdutosPageComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const addToCartParam = Number(this.route.snapshot.queryParamMap.get('addToCart'));
-    this.addToCart = isNaN(addToCartParam) ? null : addToCartParam;
-
+    const addToCartParamStr = this.route.snapshot.queryParamMap.get('addToCart')
+    const addToCartParam = Number(addToCartParamStr);
+    this.addToCart = addToCartParamStr === null || isNaN(addToCartParam) ? null : addToCartParam;
+    
     await this.localDataService.CarregaProdutos();
     this.products$ = this.localDataService.produtos$();
   }

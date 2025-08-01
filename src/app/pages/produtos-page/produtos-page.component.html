@@ -2,7 +2,12 @@
 
 @if (products$ | async; as products) {
   @for (product of products; track product.id) {
-    <produto-list-view [product]="product" (onSelecionar)="handleSelecionar($event)"/>
+    @if (addToCart == null) {
+      <produto-list-view [product]="product" />
+    }
+    @else {
+      <produto-list-view [product]="product" (onSelecionar)="handleSelecionar($event)"/>
+    }
   }
   @empty {
     <p>Nenhum produto encontrado.</p>
