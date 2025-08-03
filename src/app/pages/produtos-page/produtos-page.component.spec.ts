@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProdutosPageComponent } from './produtos-page.component';
 import { LocalStorageDataService } from '../../services/local-storage-data.service';
+import { provideRouter } from '@angular/router';
 
 describe('ProdutosPageComponent', () => {
   let component: ProdutosPageComponent;
@@ -14,6 +15,7 @@ describe('ProdutosPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ProdutosPageComponent],
       providers: [
+        provideRouter([]),
         { provide: LocalStorageDataService, useValue: mockLocalStorageDataService }
       ]
     })
