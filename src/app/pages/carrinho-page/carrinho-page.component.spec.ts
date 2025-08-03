@@ -4,11 +4,13 @@ import { LocalStorageDataService } from '../../services/local-storage-data.servi
 import { provideRouter } from '@angular/router';
 import { CotacaoService } from '../../services/cotacao.service';
 import { Carrinho } from '../../models/Carrinho.model';
+import { signal } from '@angular/core';
 
 describe('CarrinhoPageComponent', () => {
   let component: CarrinhoPageComponent;
   let fixture: ComponentFixture<CarrinhoPageComponent>;
   let mockLocalStorageDataService: jasmine.SpyObj<LocalStorageDataService>;
+  const carrinhos = signal<Carrinho[]>([]);
   
   beforeEach(async () => {
     const mockCotacaoService = new CotacaoService();
@@ -34,8 +36,13 @@ describe('CarrinhoPageComponent', () => {
       }
     });
 
-    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['CarregaCarrinhosProdutos']);
-    mockLocalStorageDataService.CarregaCarrinhosProdutos.withArgs(1).and.returnValue(Promise.resolve(carrinho));
+    carrinhos.set([carrinho]);
+
+    mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService', ['CarregaCarrinhosProdutos'], {
+        carrinhos: carrinhos
+      }
+    );
+    mockLocalStorageDataService.CarregaCarrinhosProdutos.and.returnValue(Promise.resolve(carrinho));
 
     await TestBed.configureTestingModule({
       imports: [CarrinhoPageComponent],
