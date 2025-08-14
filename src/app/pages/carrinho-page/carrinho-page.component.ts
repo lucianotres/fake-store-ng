@@ -13,6 +13,7 @@ import { LocalStorageDataService } from '../../services/local-storage-data.servi
 })
 export class CarrinhoPageComponent implements OnInit {
   id: number | null = null;
+  public carregando: boolean = true;
   public carrinho: Carrinho | null = null;
   public itemAlteraQtde: CarrinhoItem | null = null;
   
@@ -37,14 +38,18 @@ export class CarrinhoPageComponent implements OnInit {
       return;
     }
     
+    this.carregando = true;
+    
     const carrinhoLocalizado = this.localStorageData.carrinhos().find(c => c.dados.id === this.id);
     if (carrinhoLocalizado !== undefined)
     {
       this.carrinho = carrinhoLocalizado;
+      this.carregando = false;
       return;
     }
 
     this.carrinho = await this.localStorageData.CarregaCarrinhosProdutos(this.id);
+    this.carregando = false;
   }
 
   private _originalQtde: number = 0;

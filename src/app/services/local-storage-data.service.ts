@@ -63,6 +63,20 @@ export class LocalStorageDataService {
     }));
   }
 
+  incluiOuAtualizaCarrinhoNaLista(carrinho: Carrinho): void {
+    const id = carrinho.dados.id;
+
+    carrinho.items().forEach(i => i.product.set(this._products.value.find(p => p.id === i.item().productId) ?? null));
+
+    const carrinhosAtual = this.carrinhos();
+    carrinhosAtual.splice(
+      carrinhosAtual.findIndex(c => c.dados.id === id), 1,
+      carrinho      
+    );
+
+    this.carrinhos.set(carrinhosAtual);
+  }  
+
   public async CarregaCarrinhosProdutos(id: number): Promise<Carrinho | null> {
     await this.CarregaProdutos();
 
@@ -71,21 +85,33 @@ export class LocalStorageDataService {
       return null;
 
     const carrinho = new Carrinho(this.cotacao, cart);
-    carrinho.items().forEach(i => i.product.set(this._products.value.find(p => p.id === i.item().productId) ?? null));
-
-    let carrinhosAtual = this.carrinhos();
-    carrinhosAtual.splice(
-      carrinhosAtual.findIndex(c => c.dados.id === cart.id), 1,
-      carrinho      
-    );
-    this.carrinhos.set(carrinhosAtual);
+    this.incluiOuAtualizaCarrinhoNaLista(carrinho);
 
     return carrinho;
   }
 
   public async SalvarCarrinho(carrinho: Carrinho): Promise<void> {
     const cart = carrinho.getNovosDados();
-    await lastValueFrom(this._cartService.putCart$(cart));
+
+    const resultado = await lastValueFrom(this._cartService.putCart$(cart));    
+    if (resultado === null)
+      return;
+    
+    const novoCarrinho = new Carrinho(this.cotacao, resultado);
+    this.incluiOuAtualizaCarrinhoNaLista(novoCarrinho);
+  }
+
+  public async IncluirCarrinho(carrinho: Carrinho): Promise<Carrinho | null> {
+    const cart = carrinho.getNovosDados();
+    
+    const resultado = await lastValueFrom(this._cartService.postCart$(cart));
+    if (resultado === null)
+      return null;
+    
+    const novoCarrinho = new Carrinho(this.cotacao, resultado);
+    this.incluiOuAtualizaCarrinhoNaLista(novoCarrinho);
+
+    return novoCarrinho;
   }
 
   public getCotacaoSelecionada(): Signal<MinhaCotacao | null> {

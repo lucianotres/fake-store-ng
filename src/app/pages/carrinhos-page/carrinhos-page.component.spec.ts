@@ -30,12 +30,13 @@ describe('CarrinhosPageComponent', () => {
     ]);
 
     mockLocalStorageDataService = jasmine.createSpyObj('LocalStorageDataService',
-      ['CarregarCarrinhosProdutos'], {
+      ['CarregarCarrinhosProdutos', 'IncluirCarrinho'], {
         carrinhos: mockCarrinhosSignal,
         carrinhosTotal: mockTotalSignal,
         carrinhosTotalPorCotacao: mockTotalEmCotacaoSignal
       });
     mockLocalStorageDataService.CarregarCarrinhosProdutos.and.returnValue(Promise.resolve());
+    mockLocalStorageDataService.IncluirCarrinho.and.returnValue(Promise.resolve(null));
         
     await TestBed.configureTestingModule({
       imports: [CarrinhosPageComponent],
@@ -90,4 +91,16 @@ describe('CarrinhosPageComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('thead tr th:nth-child(5)')?.innerHTML).toBe('Valor Total (BRL$)');
   });
+
+  it('should update the list of carrinhos when the button Atualizar is clicked', async () => {
+    await component.handleAtualizar();
+    expect(mockLocalStorageDataService.CarregarCarrinhosProdutos).toHaveBeenCalled();
+  });
+
+  it('should be able to create a new carrinho', async () => {
+    await component.handleNovoCarrinho();
+
+    expect(mockLocalStorageDataService.IncluirCarrinho).toHaveBeenCalled();
+  });
+
 });

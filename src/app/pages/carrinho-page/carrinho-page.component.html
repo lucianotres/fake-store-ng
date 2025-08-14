@@ -1,4 +1,7 @@
-@if (carrinho !== null) {
+@if (carregando) {
+  <p>Carregando carrinho...</p>
+}
+@else { @if (carrinho !== null) {
   <div>
     <button class="btn btn-success" (click)="HandleAddProduto()">Adicionar Produto</button>
     <div>Data: {{carrinho.dados.date | date : 'dd/MM/yyyy'}}</div>
@@ -51,5 +54,5 @@
   </div>
 }
 @else {
-  <p>Carregando carrinho...</p>
-}
+  <p>Carrinho não encontrado!</p>
+}}

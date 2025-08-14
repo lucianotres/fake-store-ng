@@ -26,6 +26,11 @@ export class FakeStoreCartService {
       return this.http.get<CartDTO | null>(`${this.baseUrl}/carts/${id}`);
     }
 
+    postCart$(cart: CartDTO): Observable<CartDTO | null> {
+      this.log.logInformation(`Inclui novo carrinho...`);
+      return this.http.post<CartDTO | null>(`${this.baseUrl}/carts`, cart);
+    }
+
     putCart$(cart: CartDTO): Observable<CartDTO> {
       this.log.logInformation(`Atualizando carrinho id ${cart.id}...`);
       return this.http.put<CartDTO>(`${this.baseUrl}/carts/${cart.id}`, cart);

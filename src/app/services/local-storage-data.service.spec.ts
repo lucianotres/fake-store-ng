@@ -5,9 +5,12 @@ import { LocalStorageDataService } from "./local-storage-data.service";
 import { of } from "rxjs";
 import { Product } from "../models/product.model";
 import { AwesomeApiService } from "./awesome-api.service";
+import { Carrinho } from "../models/Carrinho.model";
+import { CotacaoService } from "./cotacao.service";
 
 describe("LocalStorageDataService", () => {
   let localStorageDataService: LocalStorageDataService;
+  let cotacaoService: CotacaoService;
   let fakeStoreProductsService: jasmine.SpyObj<FakeStoreProductsService>;
   let fakeStoreCartService: jasmine.SpyObj<FakeStoreCartService>;
   let fakeAwesomeApiService: jasmine.SpyObj<AwesomeApiService>;
@@ -57,6 +60,13 @@ describe("LocalStorageDataService", () => {
     }
   ];
 
+  const mockNovoCart = {
+    id: 14,
+    userId: 1,
+    date: new Date().toISOString(),
+    products: []
+  }
+
   const mockCotacao = {
     "code": "USD",
     "codein": "BRL",
@@ -73,12 +83,16 @@ describe("LocalStorageDataService", () => {
 
 
   beforeEach(async () => {
+    cotacaoService = new CotacaoService();
+
     fakeStoreProductsService = jasmine.createSpyObj('FakeStoreProductsService', ['getProducts']);
-    fakeStoreCartService = jasmine.createSpyObj('FakeStoreCartService', ['getCarts$']);
+    fakeStoreCartService = jasmine.createSpyObj('FakeStoreCartService', ['getCarts$', 'postCart$', 'putCart$']);
     fakeAwesomeApiService = jasmine.createSpyObj('AwesomeApiService', ['ultimaCotacao$']);
 
     fakeStoreProductsService.getProducts.and.returnValue(await Promise.resolve(of(mockProducts)));
     fakeStoreCartService.getCarts$.and.returnValue(await Promise.resolve(of(mockCarts)));
+    fakeStoreCartService.postCart$.and.returnValue(await Promise.resolve(of(mockNovoCart)));
+    fakeStoreCartService.putCart$.and.returnValue(await Promise.resolve(of(mockNovoCart)));
     fakeAwesomeApiService.ultimaCotacao$.and.returnValue(await Promise.resolve(of(mockCotacao)));
 
     TestBed.configureTestingModule({
@@ -125,6 +139,24 @@ describe("LocalStorageDataService", () => {
     expect(items.length).toBe(2);
     expect(items[0].product()).toEqual(mockProducts[0]);
     expect(items[1].product()).toEqual(mockProducts[1]);  
+  });
+
+  it("should be able to include a new carrinho", async () => {
+    const carrinho = new Carrinho(cotacaoService, mockNovoCart);
+    const retorno = await localStorageDataService.IncluirCarrinho(carrinho);
+
+    expect(fakeStoreCartService.postCart$).toHaveBeenCalled();
+    expect(retorno?.dados.id).toBe(mockNovoCart.id);
+  });
+
+  it("should be able to save and update a carrinho", async () => {
+    const carrinho = new Carrinho(cotacaoService, mockNovoCart);
+    const retorno = await localStorageDataService.SalvarCarrinho(carrinho);
+    
+    const carrinhoLocalizado = localStorageDataService.carrinhos().find(c => c.dados.id === mockNovoCart.id);
+
+    expect(fakeStoreCartService.putCart$).toHaveBeenCalled();
+    expect(carrinhoLocalizado?.dados.id).toBe(mockNovoCart.id);
   });
 
 });
