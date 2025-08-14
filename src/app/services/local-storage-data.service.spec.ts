@@ -86,14 +86,15 @@ describe("LocalStorageDataService", () => {
     cotacaoService = new CotacaoService();
 
     fakeStoreProductsService = jasmine.createSpyObj('FakeStoreProductsService', ['getProducts']);
-    fakeStoreCartService = jasmine.createSpyObj('FakeStoreCartService', ['getCarts$', 'postCart$', 'putCart$']);
+    fakeStoreCartService = jasmine.createSpyObj('FakeStoreCartService', ['getCarts$', 'postCart$', 'putCart$', 'deleteCart$']);
     fakeAwesomeApiService = jasmine.createSpyObj('AwesomeApiService', ['ultimaCotacao$']);
 
-    fakeStoreProductsService.getProducts.and.returnValue(await Promise.resolve(of(mockProducts)));
-    fakeStoreCartService.getCarts$.and.returnValue(await Promise.resolve(of(mockCarts)));
-    fakeStoreCartService.postCart$.and.returnValue(await Promise.resolve(of(mockNovoCart)));
-    fakeStoreCartService.putCart$.and.returnValue(await Promise.resolve(of(mockNovoCart)));
-    fakeAwesomeApiService.ultimaCotacao$.and.returnValue(await Promise.resolve(of(mockCotacao)));
+    fakeStoreProductsService.getProducts.and.returnValue(of(mockProducts));
+    fakeStoreCartService.getCarts$.and.returnValue(of(mockCarts));
+    fakeStoreCartService.postCart$.and.returnValue(of(mockNovoCart));
+    fakeStoreCartService.putCart$.and.returnValue(of(mockNovoCart));
+    fakeStoreCartService.deleteCart$.and.returnValue(of(undefined));
+    fakeAwesomeApiService.ultimaCotacao$.and.returnValue(of(mockCotacao));
 
     TestBed.configureTestingModule({
       providers: [
@@ -157,6 +158,12 @@ describe("LocalStorageDataService", () => {
 
     expect(fakeStoreCartService.putCart$).toHaveBeenCalled();
     expect(carrinhoLocalizado?.dados.id).toBe(mockNovoCart.id);
+  });
+
+  it("should be able to remove a carrinho", async () => {
+    await localStorageDataService.RemoverCarrinho(mockNovoCart.id);
+    
+    expect(fakeStoreCartService.deleteCart$).toHaveBeenCalled();
   });
 
 });

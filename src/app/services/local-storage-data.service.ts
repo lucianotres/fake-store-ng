@@ -114,6 +114,11 @@ export class LocalStorageDataService {
     return novoCarrinho;
   }
 
+  public async RemoverCarrinho(cartId: number): Promise<void> {
+    await lastValueFrom(this._cartService.deleteCart$(cartId));
+    this.carrinhos.set(this.carrinhos().filter(c => c.dados.id !== cartId));
+  }
+
   public getCotacaoSelecionada(): Signal<MinhaCotacao | null> {
     return this.cotacaoSelecionada;
   }

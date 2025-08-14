@@ -35,4 +35,10 @@ export class FakeStoreCartService {
       this.log.logInformation(`Atualizando carrinho id ${cart.id}...`);
       return this.http.put<CartDTO>(`${this.baseUrl}/carts/${cart.id}`, cart);
     }
+
+    deleteCart$(id: number): Observable<void> {
+      this.log.logInformation(`Excluindo carrinho id ${id}...`);
+      return this.http.delete<void>(`${this.baseUrl}/carts/${id}`);
+    }
+
 }

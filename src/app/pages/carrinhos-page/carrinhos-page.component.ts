@@ -61,4 +61,8 @@ export class CarrinhosPageComponent implements OnInit {
     }
   }
 
+  public handleRemoverCarrinho(cartId: number) {
+    this.localStorageDataService.RemoverCarrinho(cartId);
+  }
+
 }

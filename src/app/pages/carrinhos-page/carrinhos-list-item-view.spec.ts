@@ -114,9 +114,4 @@ describe('CarrinhosListItemView', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/carrinho', 2]);
   });
 
-  it('should handle remover button click', () => {
-    spyOn(window, 'alert');
-    component.handleRemover();
-    expect(window.alert).toHaveBeenCalledWith('Não implementado ainda!');
-  });
 });

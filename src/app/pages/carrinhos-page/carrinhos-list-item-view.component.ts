@@ -1,4 +1,4 @@
-import { Component, effect, Input } from "@angular/core";
+import { Component, effect, EventEmitter, Input, Output } from "@angular/core";
 import { Carrinho } from "../../models/Carrinho.model";
 import { DecimalPipe } from "@angular/common";
 import { Router } from "@angular/router";
@@ -15,6 +15,9 @@ export class CarrinhosListItemView {
   @Input()
   public carrinho?: Carrinho;
 
+  @Output()
+  onRemover = new EventEmitter<number>();
+
   constructor(
     private router: Router
   ) { }
@@ -30,6 +33,6 @@ export class CarrinhosListItemView {
     if (this.carrinho?.dados.id === undefined)
       return;
 
-    alert("Não implementado ainda!");
+    this.onRemover.emit(this.carrinho.dados.id);
   }
 }
